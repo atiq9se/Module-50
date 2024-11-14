@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { auth } from '../../firebase.init';
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 
 const Register = () => {
     const [success, setSuccess] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('')
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleRegister = (event)=>{
        event.preventDefault();
@@ -54,17 +56,26 @@ const Register = () => {
                         </label>
                         <input type="email" placeholder="email" name="email" className="input input-bordered" required />
                         </div>
+                        <div className="form-control relative">
+                            <label className="label">
+                                <span className="label-text">Password</span>
+                            </label>
+                            <input type={showPassword ? 'text':'password'} placeholder="password" name="password" className="input input-bordered" required />
+                            <button onClick={()=> setShowPassword(!showPassword)} className='btn btn-xs absolute right-2 top-12'>
+                               { showPassword ? <FaEyeSlash></FaEyeSlash>: <FaEye></FaEye>}
+                            </button>
+                            <label className="label">
+                                <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
+                            </label>
+                        </div>
                         <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Password</span>
-                        </label>
-                        <input type="password" placeholder="password" name="password" className="input input-bordered" required />
-                        <label className="label">
-                            <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
-                        </label>
+                            <label className="label cursor-pointer justify-start">
+                                <input type="checkbox" defaultChecked className="checkbox checkbox-primary" />
+                                <span className="label-text ml-2">Accept our terms and condition</span>
+                            </label>
                         </div>
                         <div className="form-control mt-6">
-                        <button className="btn btn-primary">Login</button>
+                            <button className="btn btn-primary">Login</button>
                         </div>
                     </form>
                     {
