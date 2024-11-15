@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { auth } from '../../firebase.init';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 
 const Login = () => {
 
     const [success, setSuccess] = useState(false)
     const [loginError, setLoginError] = useState('')
+    const emailRef = useRef();
 
     const handleLogin = (event)=>{
         event.preventDefault();
@@ -26,9 +27,21 @@ const Login = () => {
                
                 setSuccess(true)
             }
-        })
+        })  
+    }
 
-        
+    const handleForgotPassword=()=>{
+          const email = emailRef.current.value;
+          console.log(email);
+
+          sendPasswordResetEmail(auth, email)
+          .then(()=>{
+             alert('password reset email sent')
+          }).catch((error)=>{
+            console.log(error)
+          })
+
+
     }
     return (
         <div>
@@ -48,14 +61,14 @@ const Login = () => {
                     <label className="label">
                         <span className="label-text">Email</span>
                     </label>
-                    <input type="email" name="email" placeholder="email" className="input input-bordered" required />
+                    <input type="email" name="email" placeholder="email" ref={emailRef} className="input input-bordered" required />
                     </div>
                     <div className="form-control">
                     <label className="label">
                         <span className="label-text">Password</span>
                     </label>
                     <input type="password" name="password" placeholder="password" className="input input-bordered" required />
-                    <label className="label">
+                    <label className="label" onClick={handleForgotPassword}>
                         <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                     </label>
                     </div>
