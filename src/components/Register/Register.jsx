@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { auth } from '../../firebase.init';
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 
@@ -11,6 +11,8 @@ const Register = () => {
 
     const handleRegister = (event)=>{
        event.preventDefault();
+       const name = event.target.name.value;
+       const photo = event.target.photo.value;
        const email = event.target.email.value;
        const password = event.target.password.value;
        const terms = event.target.terms.checked;
@@ -31,14 +33,23 @@ const Register = () => {
        }
        
         createUserWithEmailAndPassword(auth, email, password)
-        .then((result)=>{
-            console.log(result.user);
-            setSuccess(true)
-            
-            sendEmailVerification(auth.currentUser)
-            .then(()=>{
-                console.log('send email verification link')
-            })
+          .then((result)=>{
+                console.log(result.user);
+                setSuccess(true)
+
+                sendEmailVerification(auth.currentUser)
+                .then(()=>{
+                    console.log('send email verification link')
+                })
+                
+                const profile = {
+                    displayName: name,
+                    photoURL: photo
+                }
+                updateProfile(auth.currentUser, profile)
+                .then(()=>{
+                    console.log('profile update')
+                })
             
 
                 
@@ -55,7 +66,7 @@ const Register = () => {
             <div className="hero bg-base-200 min-h-screen">
                 <div className="hero-content flex-col lg:flex-row-reverse">
                     <div className="text-center lg:text-left">
-                    <h1 className="text-5xl font-bold">Login now!</h1>
+                    <h1 className="text-5xl font-bold">Registration now!</h1>
                     <p className="py-6">
                         Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
                         quasi. In deleniti eaque aut repudiandae et a id nisi.
@@ -64,10 +75,22 @@ const Register = () => {
                     <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
                     <form className="card-body" onSubmit={handleRegister}>
                         <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Email</span>
-                        </label>
-                        <input type="email" placeholder="email" name="email" className="input input-bordered" required />
+                            <label className="label">
+                                <span className="label-text">Name</span>
+                            </label>
+                            <input type="text" placeholder="email" name="name" className="input input-bordered" required />
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Photo URL</span>
+                            </label>
+                            <input type="text" placeholder="email" name="photo" className="input input-bordered" required />
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Email</span>
+                            </label>
+                            <input type="email" placeholder="email" name="email" className="input input-bordered" required />
                         </div>
                         <div className="form-control relative">
                             <label className="label">
