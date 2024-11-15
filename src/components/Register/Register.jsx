@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { auth } from '../../firebase.init';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 
@@ -13,9 +13,14 @@ const Register = () => {
        event.preventDefault();
        const email = event.target.email.value;
        const password = event.target.password.value;
+       const terms = event.target.terms.checked;
        
        setErrorMessage('');
        setSuccess(false);
+
+       if(!terms){
+        setErrorMessage('Please accept our terms and condition')
+       }
 
        if(password.length < 6){
         setErrorMessage('Password should be 6 characters or longer')
@@ -29,6 +34,14 @@ const Register = () => {
         .then((result)=>{
             console.log(result.user);
             setSuccess(true)
+            
+            sendEmailVerification(auth.currentUser)
+            .then(()=>{
+                console.log('send email verification link')
+            })
+            
+
+                
         }).catch((error)=>{
            setErrorMessage(error.message)
            setSuccess(false)
@@ -70,12 +83,12 @@ const Register = () => {
                         </div>
                         <div className="form-control">
                             <label className="label cursor-pointer justify-start">
-                                <input type="checkbox" defaultChecked className="checkbox checkbox-primary" />
+                                <input type="checkbox" name="terms" defaultChecked className="checkbox checkbox-primary" />
                                 <span className="label-text ml-2">Accept our terms and condition</span>
                             </label>
                         </div>
                         <div className="form-control mt-6">
-                            <button className="btn btn-primary">Login</button>
+                            <button className="btn btn-primary">Register</button>
                         </div>
                     </form>
                     {
